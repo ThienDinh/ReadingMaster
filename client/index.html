@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Language Training</title>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script type="text/javascript">
+		function getData(){
+			console.log('Called');
+			var xhrReq = new XMLHttpRequest();
+			xhrReq.open('GET', '/data');
+			xhrReq.responseType = 'json';
+			xhrReq.send('10');
+			xhrReq.onload = function() {
+				if(xhrReq.readyState == XMLHttpRequest.DONE && xhrReq.status == 200) {
+					var wordList = xhrReq.response.wordList;
+					var margin = {
+						top: 50,
+						right: 50,
+						bottom: 50,
+						left: 50
+					}
+					var width = window.innerWidth - 50;
+					var height = window.innerHeight - 50;
+					var listSize = wordList.length;
+					console.log(wordList);
+					var g = d3.select('body').append('svg')
+						.attr('width', width)
+						.attr('height', height)
+						.attr('cursor', 'pointer')
+						.append('g');
+					g.selectAll('.word')
+						.data(wordList)
+						.enter()
+						.append('text')
+						.attr('class', 'word')
+						.attr('x', function(d) {
+							var max = width - margin.left;
+							var pos_x = Math.floor(Math.random() * max);
+							// If the position is in the left half.
+							if (pos_x <= max / 2) {
+								d3.select(this).attr('text-anchor', 'start');
+							}
+							else {								
+								d3.select(this).attr('text-anchor', 'end');
+							}
+  							return pos_x;
+						})
+						.attr('y', function(d) {							
+							var max = height - margin.top;
+							var pos_y = Math.floor(Math.random() * max);
+							// If the position is in the top half.
+							if (pos_y <= max / 2) {
+								d3.select(this).attr('alignment-baseline', 'hanging');
+							}
+							else {
+								d3.select(this).attr('alignment-baseline', 'baseline');
+							}
+							return pos_y;
+						})
+						.attr('cursor', 'pointer')
+						.attr('font-size', 20)
+						.style('transition', '.25s')
+						.attr('stroke', 'black')
+						.attr('stroke-width',1)
+						.attr('fill', 'black')
+						.on('mouseover', function(d) {
+							var currentNode = d3.select(this);
+							currentNode.attr('font-size', 100).attr('stroke', 'black').attr('stroke-width',3);
+							console.log(d);
+							if(d.part_of_speech == undefined){								
+								currentNode.attr('fill', 'black')
+							}
+							else {
+								switch(d.part_of_speech[0]) {
+									case 'noun':
+										currentNode.attr('fill', 'blue')
+										break;
+									case 'adj':
+										currentNode.attr('fill', 'purple')
+										break;
+									case 'verb':
+										currentNode.attr('fill', 'red')
+										break;
+									case 'adv':
+										currentNode.attr('fill', 'yellow')
+										break;
+									default:
+										currentNode.attr('fill', 'black')
+										break;
+								}
+							}
+						})
+						.on('mouseout', function(d) {
+							d3.select(this).attr('font-size', 20).attr('stroke', 'black').attr('stroke-width',1).attr('fill', 'white');
+						})
+						.text(function(d) {
+							return d.word;
+						});
+					// g.attr('transform', 'translate(' + margin.top + ',' + margin.left + ')')
+					console.log('Done');
+					console.log();
+				}
+			}
+		}
+	</script>
+</head>
+<body onload="getData()">
+</body>
+</html>

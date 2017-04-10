@@ -1,0 +1,15 @@
+{
+  "name": "reading-master",
+  "version": "1.0.0",
+  "description": "A web application where people can train their speed reading with high comprehension.",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.15.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ThienDinh",
+  "license": "ISC"
+}
